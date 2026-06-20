@@ -48,5 +48,5 @@ target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     mat-json
-    libclang
+    "C:/Program Files/LLVM/lib/libclang.lib"
 )
