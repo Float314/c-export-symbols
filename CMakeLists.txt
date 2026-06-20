@@ -24,6 +24,7 @@ else()
     message("-- CPM is already installed")
 endif()
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
+include(FindLibClang_choco.cmake)
 
 include(FetchContent)
 
