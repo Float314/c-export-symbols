@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
-project(c-exports-symbols
+project(c-export-symbols
     VERSION 1.0.0
     LANGUAGES CXX
-    HOMEPAGE_URL https://github.com/Float314/c-exports-symbols
+    HOMEPAGE_URL https://github.com/Float314/c-export-symbols
 )
 
 set(CMAKE_C_STANDARD 11)

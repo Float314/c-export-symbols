@@ -1,6 +1,5 @@
-# C-Exports-Symbol
+# C-Export-Symbol
 
-Helpful thing : https://clang.llvm.org/docs/LibClang.html
 A simple command-line tool that automatically generates C export headers from your C source files using **libclang**.
 
 ## Features
@@ -58,4 +57,4 @@ int add(int a, int b);
 
 ## License
 
-This project is licensed under the **Apache License 2.0 with LLVM Exceptions**.
+This project is licensed under the BSD 4-clause License. 
