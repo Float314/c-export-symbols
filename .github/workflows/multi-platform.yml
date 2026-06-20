@@ -21,3 +21,9 @@ jobs:
 
     - name: Build
       run: cmake --build build --config Release
+
+    - name: Upload Executable
+      uses: actions/upload-artifact@v3
+      with:
+        name: c-export-symbols
+        path: build/Release/c-export-symbols.exe
