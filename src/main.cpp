@@ -88,7 +88,7 @@ static std::string makeHeaderGuard(const std::filesystem::path& header_path) {
     for (char& c : guard) {
         c = std::isalnum(static_cast<unsigned char>(c)) ? static_cast<char>(std::toupper(c)) : '_';
     }
-    return guard ;
+    return guard;
 }
 
 static bool writeHeader(const std::filesystem::path& header_path, const std::vector<function_unit>& functions) {

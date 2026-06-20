@@ -24,12 +24,16 @@ else()
     message("-- CPM is already installed")
 endif()
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
-include(FindLibClang_choco.cmake)
+include(src/FindLibClang_choco.cmake)
 
 include(FetchContent)
 
 CPMAddPackage("gh:geode-sdk/json@3.3.0")
-find_package(Clang CONFIG REQUIRED)
+# find_package(Clang CONFIG)
+
+
+set(Clang_DIR "C:/Program Files/LLVM/lib/")
+
 
 # Exports-symbol doesnt guarantee this. You have to add this yourself 
 set(SOURCES
@@ -40,6 +44,7 @@ message("SOURCES: ${SOURCES}")
 
 # DO NOT EDIT THIS LINE !
 add_executable(${PROJECT_NAME} ${SOURCES})
+target_include_directories(${PROJECT_NAME} PRIVATE "C:/Program Files/LLVM/include")
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
