@@ -28,6 +28,7 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 include(FetchContent)
 
 CPMAddPackage("gh:geode-sdk/json@3.3.0")
+find_package(Clang CONFIG REQUIRED)
 
 # Exports-symbol doesnt guarantee this. You have to add this yourself 
 set(SOURCES
@@ -38,12 +39,6 @@ message("SOURCES: ${SOURCES}")
 
 # DO NOT EDIT THIS LINE !
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE "E:/LLVM/include")
-
-target_link_directories(${PROJECT_NAME} PRIVATE
-    "E:/LLVM/lib"
-)
-
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
