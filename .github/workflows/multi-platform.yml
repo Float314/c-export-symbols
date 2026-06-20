@@ -28,27 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install LLVM (Ubuntu)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt update
-          sudo apt install -y \
-              clang \
-              llvm-dev \
-              libclang-dev \
-              ninja-build
-
-      - name: Install LLVM (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          brew update
-          brew install llvm ninja
-
-      - name: Install LLVM (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          choco install llvm --yes
+      - name: Install LLVM
+        uses: KyleMayes/install-llvm-action@v2
+        with:
+            version: "22"
 
       - name: Configure
         run: >
