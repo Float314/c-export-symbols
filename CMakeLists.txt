@@ -52,4 +52,5 @@ target_link_libraries(
     PRIVATE
     mat-json
     clang-cpp
+    libclang
 )
