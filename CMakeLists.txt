@@ -10,6 +10,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Download CPM, cause this shit doesnt come bundled in 
 if(NOT EXISTS "${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake")
@@ -28,25 +29,27 @@ include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 include(FetchContent)
 
 CPMAddPackage("gh:geode-sdk/json@3.3.0")
-# find_package(Clang CONFIG)
 
+find_package(LLVM REQUIRED CONFIG)
+find_package(Clang REQUIRED CONFIG)
 
-set(Clang_DIR "C:/Program Files/LLVM/lib/")
+message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
+message(STATUS "Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
+include_directories(${LLVM_INCLUDE_DIRS})
+separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
+add_definitions(${LLVM_DEFINITIONS_LIST})
 
-# Exports-symbol doesnt guarantee this. You have to add this yourself 
 set(SOURCES
     src/c-parser.cpp
     src/main.cpp
 )
 message("SOURCES: ${SOURCES}")
 
-# DO NOT EDIT THIS LINE !
 add_executable(${PROJECT_NAME} ${SOURCES})
-target_include_directories(${PROJECT_NAME} PRIVATE "C:/Program Files/LLVM/include")
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
     mat-json
-    "C:/Program Files/LLVM/lib/libclang.lib"
+    clang-cpp
 )

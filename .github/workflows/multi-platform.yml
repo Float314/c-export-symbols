@@ -1,4 +1,4 @@
-name: "Win32 Platform Build (Temporary test CI)"
+name: Multi-Platform Build
 
 on:
   push:
@@ -8,15 +8,48 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: c-export-symbols
+            build_path: build/c-export-symbols
+          - os: macos-latest
+            artifact_name: c-export-symbols
+            build_path: build/c-export-symbols
+          - os: windows-latest
+            artifact_name: c-export-symbols.exe
+            build_path: build/Release/c-export-symbols.exe
+
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Install LLVM Tools
+    - name: Install LLVM (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y llvm-dev libclang-dev
+
+    - name: Install LLVM (macOS)
+      if: runner.os == 'macOS'
+      run: brew install llvm
+
+    - name: Install LLVM (Windows)
+      if: runner.os == 'Windows'
       run: choco install llvm -y
 
-    - name: Configure CMake
+    - name: Configure CMake (Linux)
+      if: runner.os == 'Linux'
+      run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/usr/lib/llvm-18/cmake;/usr/lib/llvm-18/lib/cmake/clang"
+
+    - name: Configure CMake (macOS)
+      if: runner.os == 'macOS'
+      run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$(brew --prefix llvm)/lib/cmake/llvm;$(brew --prefix llvm)/lib/cmake/clang"
+
+    - name: Configure CMake (Windows)
+      if: runner.os == 'Windows'
       run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
@@ -25,5 +58,5 @@ jobs:
     - name: Upload Executable
       uses: actions/upload-artifact@v4
       with:
-        name: c-export-symbols
-        path: build/Release/c-export-symbols.exe
+        name: c-export-symbols-${{ runner.os }}
+        path: ${{ matrix.build_path }}
