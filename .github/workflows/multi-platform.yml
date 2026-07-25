@@ -32,7 +32,6 @@ jobs:
     - name: Setup vcpkg
       uses: johnwason/vcpkg-action@v8
       with:
-        manifest-dir: ${{ github.workspace }}/src
         token: ${{ github.token }}
         triplet: ${{ matrix.triplet }}
 
