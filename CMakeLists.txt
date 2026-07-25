@@ -26,9 +26,7 @@ else()
 endif()
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
-include(FetchContent)
-
-CPMAddPackage("gh:geode-sdk/json@3.3.0")
+CPMAddPackage("gh:nlohmann/json@3.11.2")
 
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
@@ -50,7 +48,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 target_link_libraries(
     ${PROJECT_NAME}
     PRIVATE
-    mat-json
+    nlohmann_json::nlohmann_json
     clang-cpp
     libclang
 )

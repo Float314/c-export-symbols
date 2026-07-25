@@ -12,12 +12,15 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
+            triplet: x64-linux
             artifact_name: c-export-symbols
             build_path: build/c-export-symbols
           - os: macos-latest
+            triplet: arm64-osx
             artifact_name: c-export-symbols
             build_path: build/c-export-symbols
           - os: windows-latest
+            triplet: x64-windows
             artifact_name: c-export-symbols.exe
             build_path: build/Release/c-export-symbols.exe
 
@@ -26,31 +29,36 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LLVM (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y llvm-dev libclang-dev
-
-    - name: Install LLVM (macOS)
-      if: runner.os == 'macOS'
-      run: brew install llvm
-
-    - name: Install LLVM (Windows)
-      if: runner.os == 'Windows'
-      run: choco install llvm -y
+    - name: Setup vcpkg
+      uses: johnwason/vcpkg-action@v8
+      with:
+        manifest-dir: ${{ github.workspace }}/src
+        token: ${{ github.token }}
+        triplet: ${{ matrix.triplet }}
 
     - name: Configure CMake (Linux)
       if: runner.os == 'Linux'
-      run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="/usr/lib/llvm-18/cmake;/usr/lib/llvm-18/lib/cmake/clang"
+      run: >
+        cmake -S . -B build -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
+        -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }}
 
     - name: Configure CMake (macOS)
       if: runner.os == 'macOS'
-      run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$(brew --prefix llvm)/lib/cmake/llvm;$(brew --prefix llvm)/lib/cmake/clang"
+      run: >
+        cmake -S . -B build -G Ninja
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
+        -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }}
 
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="C:/Program Files/LLVM/lib/cmake/llvm;C:/Program Files/LLVM/lib/cmake/clang"
+      run: >
+        cmake -S . -B build
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake
+        -DVCPKG_TARGET_TRIPLET=${{ matrix.triplet }}
 
     - name: Build
       run: cmake --build build --config Release

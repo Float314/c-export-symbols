@@ -53,7 +53,7 @@ int add(int a, int b);
 ## Dependencies
 
 * libclang
-* matjson
+* nlohmann/json
 
 ## License
 

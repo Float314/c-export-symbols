@@ -36,13 +36,15 @@
 
 
 #include "c-parser.hpp"
-#include <matjson.hpp>
+#include <nlohmann/json.hpp>
  
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
 #include <cctype>
+
+using json = nlohmann::json;
 
 struct config_json {
     std::vector<std::string> files;
@@ -56,26 +58,25 @@ static bool loadConfig(const std::string& config_path, config_json& cfg) {
         return false;
     }
  
-    auto result = matjson::parse(in); // matjson::parse(std::istream&) -> Result<Value, ParseError>
-    if (!result) {
+    json j;
+    try {
+        j = json::parse(in);
+    } catch (const json::parse_error& e) {
         std::cerr << "error: invalid JSON in '" << config_path << "': "
-                   << result.unwrapErr().message << "\n";
+                   << e.what() << "\n";
         return false;
     }
-    matjson::Value json = result.unwrap();
  
-    if (json.contains("files") && json["files"].isArray()) {
-        for (auto& entry : json["files"]) {
-            auto str_result = entry.asString();
-            if (str_result) {
-                cfg.files.push_back(str_result.unwrap());
+    if (j.contains("files") && j["files"].is_array()) {
+        for (auto& entry : j["files"]) {
+            if (entry.is_string()) {
+                cfg.files.push_back(entry.get<std::string>());
             }
         }
     }
  
-    if (json.contains("exports-symbol-directory")) {
-        auto dir_result = json["exports-symbol-directory"].asString();
-        cfg.export_dir = dir_result ? dir_result.unwrap() : ".";
+    if (j.contains("exports-symbol-directory") && j["exports-symbol-directory"].is_string()) {
+        cfg.export_dir = j["exports-symbol-directory"].get<std::string>();
     } else {
         cfg.export_dir = ".";
     }
