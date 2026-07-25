@@ -2,6 +2,6 @@
   "name": "c-export-symbols",
   "version-semver": "1.0.0",
   "dependencies": [
-    "libclang"
+    "llvm"
   ]
 }
