@@ -31,7 +31,11 @@ jobs:
 
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
-      
+      with: 
+        vcpkgJsonGlob: vcpkg.json 
+        vcpkgCommitId: 8f57207a8a1b96a4a864e11f85d57b0a252b3ac3
+       
+
     - name: Configure CMake (Linux)
       run: >
         cmake -S . -B build -G Ninja
