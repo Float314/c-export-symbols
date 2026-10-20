@@ -26,7 +26,7 @@ else()
 endif()
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
 
-CPMAddPackage("gh:nlohmann/json@3.11.2")
+CPMAddPackage("gh:nlohmann/json@3.12.0")
 
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
