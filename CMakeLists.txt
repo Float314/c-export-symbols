@@ -25,8 +25,14 @@ else()
     message("-- CPM is already installed")
 endif()
 include(${CMAKE_CURRENT_BINARY_DIR}/cmake/CPM.cmake)
+include(FetchContent)
 
-CPMAddPackage("gh:nlohmann/json@3.12.0")
+FetchContent_Declare(
+    json
+    GIT_REPOSITORY https://github.com/nlohmann/json
+    GIT_TAG develop
+)
+FetchContent_MakeAvailable(json)
 
 find_package(LLVM REQUIRED CONFIG)
 find_package(Clang REQUIRED CONFIG)
